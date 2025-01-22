@@ -21,12 +21,12 @@
   "exclude": ["node_modules", "dist"],
   "extends": ["astro/tsconfigs/base"],
   "plugins": [
-      {
-        "name": "@astrojs/ts-plugin"
-      },
+    {
+      "name": "@astrojs/ts-plugin"
+    }
   ],
   "paths": {
-      "@components/*": ["src/components/*"],
-      "@layouts/*": ["src/layouts/*"]
-    }
+    "@components/*": ["src/components/*"],
+    "@layouts/*": ["src/layouts/*"]
+  }
 }
