@@ -1,0 +1,31 @@
+---
+import HeaderLink from "./HeaderLink.astro";
+---
+<nav>
+  <ul class='flex space-x-6 text-gray-700 dark:text-gray-300'>
+    <li>
+      <HeaderLink
+        href='/'
+        class='font-extralight text-slate-900 dark:text-white hover:text-slate-500 dark:hover:text-slate-200 animate-fade-up animate-once'
+      >
+        Home
+      </HeaderLink>
+    </li>
+    <li>
+      <HeaderLink
+        href='/blog'
+        class='font-extralight text-slate-900 dark:text-white hover:text-slate-500 dark:hover:text-slate-200 animate-fade-up animate-delay-100 animate-once'
+      >
+        Blog
+      </HeaderLink>
+    </li>
+    <li>
+      <HeaderLink
+        href='/contact'
+        class='font-extralight text-slate-900 dark:text-white hover:text-slate-500 dark:hover:text-slate-200 animate-fade-up animate-delay-200 animate-once'
+      >
+        Contact
+      </HeaderLink>
+    </li>
+  </ul>
+</nav>

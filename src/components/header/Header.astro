@@ -1,0 +1,52 @@
+---
+import Menu from "./menu.astro";
+---
+
+<header
+	class='flex items-center justify-between p-4 dark:border-gray-700'
+>
+	<div class='container mx-auto px-4 py-3 flex items-center justify-between'>
+		<div class='text-lg font-bold'>
+			<a href='/' class='block py-1 px-3 font-black bg-black text-white dark:text-dark dark:bg-white dark:text-black'>E</a>
+		</div>
+		<Menu />
+
+		<button
+			id="toggle-theme"
+    class="p-2 rounded bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 focus:outline-none"
+    aria-label="Toggle Theme"
+  >
+
+    <svg class="w-6 h-6 text-gray-800 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 3v2m0 14v2m9-9h-2M5 12H3m16.364-7.364l-1.414 1.414M6.05 17.95l-1.414 1.414m12.728 0l1.414-1.414M6.05 6.05L4.636 4.636M12 5a7 7 0 100 14 7 7 0 000-14z"
+      />
+    </svg>
+  </button>
+	</div>
+</header>
+
+<script >
+	document.addEventListener("DOMContentLoaded", () => {
+		const savedTheme = localStorage.getItem("theme");
+		if (savedTheme === "dark") {
+			document.documentElement.classList.add("dark");
+		}
+
+		const toggleThemeButton = document.getElementById("toggle-theme");
+		toggleThemeButton?.addEventListener("click", () => {
+			const html = document.documentElement;
+
+			if (html.classList.contains("dark")) {
+				html.classList.remove("dark");
+				localStorage.setItem("theme", "light");
+			} else {
+				html.classList.add("dark");
+				localStorage.setItem("theme", "dark");
+			}
+		});
+	});
+</script>

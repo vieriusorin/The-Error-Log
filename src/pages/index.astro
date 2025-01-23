@@ -1,22 +1,8 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
-import { ClientRouter } from "astro:transitions";
+import CommonLayout from "../layouts/CommonLayout.astro";
+import Hero from "../shared/hero/Hero.astro";
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<ClientRouter />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1 class="text-4xl">The error log</h1>
-		</main>
-		<Footer />
-	</body>
-</html>
+<CommonLayout>
+	<Hero />
+</CommonLayout>
