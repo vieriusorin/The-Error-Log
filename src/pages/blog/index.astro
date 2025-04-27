@@ -1,111 +1,115 @@
 ---
-import BaseHead from "../../components/BaseHead.astro";
-import Header from "../..components/header/Header.astro";
-import Footer from "../../components/Footer.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
-import { getCollection } from "astro:content";
-import FormattedDate from "../../components/FormattedDate.astro";
+import CommonLayout from "../../layouts/CommonLayout.astro";
+import { getBlogPosts } from "../../lib/contentful"; // Import the function to fetch posts
+import type { PostType } from "../../entities/blog/post-list/model"; // Import the PostType
 
-const posts = (await getCollection("blog")).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const PER_PAGE = 5; // Define how many posts per page
+
+// Get current page and search query from URL parameters
+const currentPage = Number(Astro.url.searchParams.get("page")) || 1;
+const searchQuery = Astro.url.searchParams.get("q") || "";
+
+// Fetch blog posts from Contentful
+console.log(
+	`[index.astro] Fetching page: ${currentPage}, limit: ${PER_PAGE}, query: '${searchQuery}'`
+); // Log parameters
+const { posts, total } = await getBlogPosts({
+	page: currentPage,
+	limit: PER_PAGE,
+	searchQuery,
+});
+
+const totalPages = Math.ceil(total / PER_PAGE);
+
+console.log(`[index.astro] Total posts: ${totalPages}`);
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									<img width={720} height={360} src={post.data.heroImage} alt="" />
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
+<CommonLayout>
+	<section class='section'>
+		<div class='container'>
+			<h2 class='heading-2'>Blog</h2>
+
+			{/* Search Form */}
+			<form class='mb-8' method='get' action='/blog'>
+				<label for='search-input' class='sr-only'>Search posts</label>
+				<div class='flex gap-2'>
+					<input
+						type='search'
+						name='q'
+						id='search-input'
+						placeholder='Search posts...'
+						value={searchQuery}
+						class='flex-grow p-2 border rounded dark:bg-gray-800 dark:border-gray-700'
+					/>
+					<button
+						type='submit'
+						class='p-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+						>Search</button
+					>
+				</div>
+			</form>
+
+			{/* Blog Post List */}
+			{
+				posts.length > 0 ? (
+					<ul class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'>
+						{posts.map((post: PostType) => (
+							<li class='border rounded p-4 dark:border-gray-700 hover:shadow-lg transition-shadow'>
+								<a href={`/blog/${post.slug}`} class='block space-y-2'>
+									<h3 class='heading-3 text-xl font-semibold'>{post.title}</h3>
+									<p class='text-gray-600 dark:text-gray-400'>{post.summary}</p>
+									<small class='text-gray-500 dark:text-gray-500'>
+										{post.publishedDate}
+									</small>
 								</a>
 							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+						))}
+					</ul>
+				) : (
+					<p>
+						No blog posts found{searchQuery ? ` for "${searchQuery}"` : ""}.
+					</p>
+				)
+			}
+
+			{/* Pagination */}
+			{
+				totalPages > 1 && (
+					<nav class='flex justify-between items-center'>
+						<div>
+							{currentPage > 1 ? (
+								<a
+									href={`/blog?page=${currentPage - 1}${searchQuery ? `&q=${searchQuery}` : ""}`}
+									class='p-2 border rounded dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'
+								>
+									&larr; Previous
+								</a>
+							) : (
+								<span class='p-2 text-gray-400 dark:text-gray-600'>
+									&larr; Previous
+								</span>
+							)}
+						</div>
+						<span class='text-gray-600 dark:text-gray-400'>
+							Page {currentPage} of {totalPages}
+						</span>
+						<div>
+							{currentPage < totalPages ? (
+								<a
+									href={`/blog?page=${currentPage + 1}${searchQuery ? `&q=${searchQuery}` : ""}`}
+									class='p-2 border rounded dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'
+								>
+									Next &rarr;
+								</a>
+							) : (
+								<span class='p-2 text-gray-400 dark:text-gray-600'>
+									Next &rarr;
+								</span>
+							)}
+						</div>
+					</nav>
+				)
+			}
+		</div>
+	</section>
+</CommonLayout>

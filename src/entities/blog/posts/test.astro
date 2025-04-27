@@ -1,0 +1,29 @@
+---
+
+import type { PostType } from "../../../entities/blog/post-list/model";
+import { getBlogPosts } from "../../../lib/contentful";
+const PER_PAGE = 1;
+// const currentPage = Number(Astro.url.searchParams.get("page")) || 1;
+const searchQuery = Astro.url.searchParams.get("q") || "";
+
+const { currentPage = 1 } = Astro.props 
+
+const { posts  } = await getBlogPosts({ page: currentPage, limit: PER_PAGE, searchQuery });
+---
+
+<section class="section">
+    <div class="container">
+        <h2 class="heading-2">Blog</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {posts.map((post: PostType) => (
+                <li>
+                  <a href={`/blog/${post.slug}`}>
+                    <h2>{post.title}</h2>
+                    <p>{post.summary}</p>
+                    <small>{new Date(post.publishedDate).toDateString()}</small>
+                  </a>
+                </li>
+              ))}
+        </div>
+    </div>
+</section>

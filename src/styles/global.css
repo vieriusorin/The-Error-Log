@@ -1,5 +1,15 @@
 @import "tailwindcss";
+@plugin "tailwindcss-motion";
 @import "@fontsource/poppins";
+
+:root {
+  --typing-steps: 20;
+}
+
+@theme {
+  --color-gray-light: #f8f6f2;
+  --color-gray-900: #0c0b0b;
+}
 
 html {
   transition:
@@ -12,6 +22,7 @@ html {
 @theme {
   --font-script: Great Vibes, cursive;
   --container-md: 768px;
+  --shadow-custom: 0 10px 75px 15px #0a265d2e;
 }
 
 .container {
@@ -19,15 +30,15 @@ html {
 }
 
 .heading-1 {
-  @apply text-4xl md:text-7xl leading-normal pb-7 text-center font-bold text-gray-900 dark:text-gray-100;
+  @apply text-4xl md:text-7xl leading-normal pb-7 font-bold text-gray-900 dark:text-gray-100;
 }
 
 .heading-2 {
-  @apply text-2xl md:text-5xl leading-normal pb-7 text-center font-semibold text-gray-900 dark:text-gray-100;
+  @apply text-2xl md:text-5xl leading-normal pb-7 font-semibold text-gray-900 dark:text-gray-100;
 }
 
 .heading-3 {
-  @apply text-xl md:text-3xl leading-normal pb-7 text-center font-semibold text-gray-900 dark:text-gray-100;
+  @apply text-xl md:text-3xl leading-normal pb-7 font-semibold text-gray-900 dark:text-gray-100;
 }
 
 .section {
@@ -38,6 +49,39 @@ html {
   }
 }
 
+.typewriter-text {
+  @apply overflow-hidden whitespace-nowrap border-r-2 border-solid border-gray-900 dark:border-gray-100;
+  animation:
+    typing 3.5s steps(var(--typing-steps), end),
+    blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--color-primary);
+  }
+}
+
 body {
   font-family: var(--font-family-sans-serif);
+}
+
+.section-bg {
+  opacity: 0.1;
+  background-image:
+    repeating-linear-gradient(transparent, #7ebdff 60px),
+    repeating-linear-gradient(0.66turn, transparent, #175853 50px);
 }

@@ -1,0 +1,37 @@
+---
+import CommonLayout from "../../layouts/CommonLayout.astro";
+import { getBlogPosts } from "../../lib/contentful";
+
+const posts = await getBlogPosts();
+const { slug } = Astro.params;
+console.log(posts.posts);
+const post = posts.posts.find((p) => p.slug === slug);
+
+// if (!post) {
+// 	throw new Error("Post not found");
+// }
+
+// export async function getStaticPaths() {
+// 	const posts = await getBlogPosts();
+
+// 	return posts.posts.map((post: { slug: string }) => ({
+// 		params: {
+// 			slug: post.slug,
+// 		},
+// 	}));
+// }
+---
+
+<CommonLayout>
+	<section class='section bg-gray-100 dark:bg-gray-900'>
+		<div class='container'>
+			<!-- <h2 class='heading-2 text-center'>{post.title}</h2> -->
+		</div>
+	</section>
+
+	<section class='section bg-white dark:bg-gray-900'>
+		<div class='container'>
+			<!-- <h2 class='heading-2 text-center'>{JSON.stringify(post)}</h2> -->
+		</div>
+	</section>
+</CommonLayout>
